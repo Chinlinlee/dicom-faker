@@ -25,10 +25,10 @@ class StudyGenerator {
         this.instancesNum = instancesNum;
     }
 
-    generate() {
+    async generate() {
         for (let i = 0; i < this.seriesNum; i++) {
             let seriesGenerator = new SeriesGenerator(this, i+1, this.instancesNum);
-            seriesGenerator.generate();
+            await seriesGenerator.generate();
         }
     }
 }

@@ -7,9 +7,12 @@ const { DicomUID } = require("dicom-uid");
 const mkdirp = require("mkdirp");
 const fs = require("fs");
 const { GlobalArgs } = require("./globalArgs");
+const { request } = require("undici");
 
 const NUMBER_OF_FRAMES = 3;
 const FRAMES_PER_SEC = 10;
+const FRAME_WIDTH = 512;
+const FRAME_HEIGHT = 512;
 
 class InstanceGenerator {
     /**
@@ -37,7 +40,30 @@ class InstanceGenerator {
         return frameBuffers;
     }
 
-    generate() {
+    async #getLoremFrames() {
+        let url = `https://picsum.photos/${FRAME_WIDTH}/${FRAME_HEIGHT}.jpg`
+
+        const frameBuffers = [];
+
+        for (let i = 0; i < NUMBER_OF_FRAMES; i++) {
+            const { body } = await request(url, {
+                headers: {
+                    accept: 'image/jpeg',
+                },
+                maxRedirections: 10
+            });
+            const frameBuffer = await body.arrayBuffer();
+            if (frameBuffer.length & 1) {
+                frameBuffer = Buffer.concat([frameBuffer, Buffer.from([0x00])]);
+            }
+
+            frameBuffers.push(frameBuffer);
+        }
+
+        return frameBuffers;
+    }
+
+    async generate() {
         let sopInstanceUID = DicomMetaDictionary.uid();
 
         const dataset = {
@@ -100,7 +126,7 @@ class InstanceGenerator {
             BitsStored: 8,
             HighBit: 7,
             PixelRepresentation: 0,
-            PixelData: this.#getFrames(),
+            PixelData: GlobalArgs.useLoremImage ? await this.#getLoremFrames() : this.#getFrames(),
 
             FrameIncrementPointer: attributeNameToIdentifier('FrameTime'),
 

@@ -17,6 +17,7 @@
     "dcmjs": "0.33.1",
     "dicom-uid": "^1.0.0",
     "mkdirp": "^3.0.1",
-    "parse-int": "^1.0.3"
+    "parse-int": "^1.0.3",
+    "undici": "^6.20.1"
   }
 }

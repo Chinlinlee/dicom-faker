@@ -24,10 +24,10 @@ class SeriesGenerator {
         this.instancesNum = instancesNum;
     }
 
-    generate() {
+    async generate() {
         for (let i = 0; i < this.instancesNum; i++) {
             let instanceGenerator = new InstanceGenerator(this, i + 1);
-            instanceGenerator.generate();
+            await instanceGenerator.generate();
         }
     }
 }

@@ -14,10 +14,10 @@ class PatientGenerator {
         this.instancesNum = instancesNum;
     }
 
-    generate() {
+    async generate() {
         for (let i = 0; i < this.studiesNum; i++) {
             let studyGenerator = new StudyGenerator(this, this.seriesNum, this.instancesNum);
-            studyGenerator.generate();
+            await studyGenerator.generate();
         }
     }
 }
