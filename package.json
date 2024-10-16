@@ -1,0 +1,22 @@
+{
+  "name": "dicom-faker",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Chinlinlee",
+  "license": "MIT",
+  "dependencies": {
+    "@faker-js/faker": "^9.0.3",
+    "canvas": "^2.11.2",
+    "commander": "^12.1.0",
+    "dayjs": "^1.11.13",
+    "dcmjs": "0.33.1",
+    "dicom-uid": "^1.0.0",
+    "mkdirp": "^3.0.1",
+    "parse-int": "^1.0.3"
+  }
+}
