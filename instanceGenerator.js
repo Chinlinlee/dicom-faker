@@ -73,7 +73,7 @@ class InstanceGenerator {
             _meta: {
                 _vrMap: {},
                 FileMetaInformationVersion: new Uint8Array([0, 1]).buffer,
-                MediaStorageSOPClassUID: DicomUID.MultiframeTrueColorSecondaryCaptureSopClassUid,
+                MediaStorageSOPClassUID: DicomUID.MultiFrameTrueColorSecondaryCaptureImageStorage,
                 MediaStorageSOPInstanceUID: sopInstanceUID,
                 TransferSyntaxUID: DicomUID.JPEGBaseline8Bit,
                 ImplementationClassUID: '1.3.6.1.4.1.30071.8',
@@ -135,7 +135,7 @@ class InstanceGenerator {
             FrameDelay: '0.0',
 
             // SOP Common Module Attributes
-            SOPClassUID: DicomUID.MultiframeTrueColorSecondaryCaptureSopClassUid,
+            SOPClassUID: DicomUID.MultiFrameTrueColorSecondaryCaptureImageStorage,
             SOPInstanceUID: sopInstanceUID,
             SpecificCharacterSet: 'ISO_IR 100',
         };
