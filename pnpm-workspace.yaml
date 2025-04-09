@@ -1,0 +1,3 @@
+onlyBuiltDependencies:
+  - canvas
+  - core-js-pure

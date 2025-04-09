@@ -11,7 +11,7 @@
   "license": "MIT",
   "dependencies": {
     "@faker-js/faker": "^9.0.3",
-    "canvas": "^2.11.2",
+    "canvas": "^3.1.0",
     "commander": "^12.1.0",
     "dayjs": "^1.11.13",
     "dcmjs": "0.33.1",
