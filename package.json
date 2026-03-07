@@ -10,14 +10,14 @@
   "author": "Chinlinlee",
   "license": "MIT",
   "dependencies": {
-    "@faker-js/faker": "^9.0.3",
+    "@faker-js/faker": "^10.3.0",
     "canvas": "^3.1.0",
     "commander": "^12.1.0",
     "dayjs": "^1.11.13",
-    "dcmjs": "0.33.1",
+    "dcmjs": "0.50.1",
     "dicom-uid": "^1.0.0",
     "mkdirp": "^3.0.1",
     "parse-int": "^1.0.3",
-    "undici": "^6.20.1"
+    "undici": "^6.23.0"
   }
 }
