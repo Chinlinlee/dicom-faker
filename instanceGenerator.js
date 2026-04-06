@@ -9,7 +9,6 @@ const fs = require("fs");
 const { GlobalArgs } = require("./globalArgs");
 const { request } = require("undici");
 
-const NUMBER_OF_FRAMES = 3;
 const FRAMES_PER_SEC = 10;
 const FRAME_WIDTH = 512;
 const FRAME_HEIGHT = 512;
@@ -28,7 +27,7 @@ class InstanceGenerator {
     #getFrames() {
         const frameBuffers = [];
 
-        for (let i = 0; i < NUMBER_OF_FRAMES; i++) {
+        for (let i = 0; i < GlobalArgs.numberOfFrames; i++) {
             let frameBuffer = JpegGenerator.generate(i.toString());
             if (frameBuffer.length & 1) {
                 frameBuffer = Buffer.concat([frameBuffer, Buffer.from([0x00])]);
@@ -45,7 +44,7 @@ class InstanceGenerator {
 
         const frameBuffers = [];
 
-        for (let i = 0; i < NUMBER_OF_FRAMES; i++) {
+        for (let i = 0; i < GlobalArgs.numberOfFrames; i++) {
             const { body } = await request(url, {
                 headers: {
                     accept: 'image/jpeg',
@@ -119,7 +118,7 @@ class InstanceGenerator {
             SamplesPerPixel: 3,
             PhotometricInterpretation: 'YBR_FULL_422',
             PlanarConfiguration: 0,
-            NumberOfFrames: `${NUMBER_OF_FRAMES}`,
+            NumberOfFrames: `${GlobalArgs.numberOfFrames}`,
             Rows: 512,
             Columns: 512,
             BitsAllocated: 8,
@@ -131,7 +130,7 @@ class InstanceGenerator {
             FrameIncrementPointer: attributeNameToIdentifier('FrameTime'),
 
             // Cine Module Attributes
-            FrameTime: `${NUMBER_OF_FRAMES === 1 ? '0' : 1000 / FRAMES_PER_SEC}`,
+            FrameTime: `${GlobalArgs.numberOfFrames === 1 ? '0' : 1000 / FRAMES_PER_SEC}`,
             FrameDelay: '0.0',
 
             // SOP Common Module Attributes

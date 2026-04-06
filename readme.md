@@ -7,7 +7,7 @@ DICOM Faker 是一個用於生成模擬 DICOM 檔案的工具。它可以創建�
 - 生成多層級的 DICOM 資料結構(Patient、Study、Series、Instance)
 - 使用真實的 DICOM 標籤和 UID
 - 生成隨機但近乎合理的病患和醫療資訊
-- 創建包含簡單影像資料的 2 幀 DICOM 檔案
+- 創建包含可調整幀數影像資料的 DICOM 檔案
 
 ## 安裝
 
@@ -27,13 +27,14 @@ node index.js [選項]
 - `-st, --studies <number>`: 每個病患的檢查數量 (預設: 1)
 - `-se, --series <number>`: 每個檢查的系列數量 (預設: 1)
 - `-in, --instances <number>`: 每個系列的影像數量 (預設: 1)
+- `-f, --frame <number>`: 每個 Instance 的幀數 (預設: 1)
 - `-o, --output <path>`: 輸出目錄路徑 (預設: './dicom')
 
 ### 範例
 
 生成 2 個病患，每個病患有 3 個檢查，每個檢查有 2 個系列，每個系列有 5 個影像:
 ```bash
-node index.js -p 2 -st 3 -se 2 -in 5 -o ./output
+node index.js -p 2 -st 3 -se 2 -in 5 -f 3 -o ./output
 ```
 
 
