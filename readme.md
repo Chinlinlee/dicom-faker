@@ -21,6 +21,11 @@ DICOM Faker 是一個用於生成模擬 DICOM 檔案的工具。它可以創建�
 node index.js [選項]
 ```
 
+將資料夾中的 JPG/JPEG 轉成同一個 Study/Series 底下的 DICOM:
+```bash
+node folderToDicom.js <input-folder> [output-folder]
+```
+
 ### 選項
 
 - `-p, --patients <number>`: 要生成的病患數量 (預設: 1)
@@ -37,10 +42,21 @@ node index.js [選項]
 node index.js -p 2 -st 3 -se 2 -in 5 -f 3 -o ./output
 ```
 
+將 `./images` 內所有 JPG/JPEG 遞迴轉成 DICOM，輸出到預設的 `./dicom`:
+```bash
+node folderToDicom.js ./images
+```
+
+將 `./images` 內所有 JPG/JPEG 遞迴轉成同一個 Study/Series 底下的 DICOM，並輸出到 `./output`:
+```bash
+node folderToDicom.js ./images ./output
+```
+
 
 ## 專案結構
 
 - `index.js`: 主入口檔案，處理命令列參數
+- `folderToDicom.js`: 將資料夾中的 JPG/JPEG 轉成單一 Study/Series 的 DICOM
 - `patientGenerator.js`: 生成病患資料
 - `studyGenerator.js`: 生成檢查資料
 - `seriesGenerator.js`: 生成系列資料

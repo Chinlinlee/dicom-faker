@@ -18,22 +18,41 @@ class InstanceGenerator {
      * 
      * @param {import("./seriesGenerator").SeriesGenerator} series 
      * @param {number} num 
+     * @param {{
+     *   frameBuffers?: Array<Buffer | ArrayBuffer>,
+     *   rows?: number,
+     *   columns?: number,
+     * }} [options]
      */
-    constructor(series, num = 1) {
+    constructor(series, num = 1, options = {}) {
         this.series = series;
         this.instanceNumber = num.toString();
+        this.frameBuffers = options.frameBuffers;
+        this.rows = options.rows || FRAME_HEIGHT;
+        this.columns = options.columns || FRAME_WIDTH;
+    }
+
+    #toEvenLengthArrayBuffer(frameBuffer) {
+        let normalizedBuffer = Buffer.isBuffer(frameBuffer)
+            ? frameBuffer
+            : Buffer.from(frameBuffer);
+
+        if (normalizedBuffer.length & 1) {
+            normalizedBuffer = Buffer.concat([normalizedBuffer, Buffer.from([0x00])]);
+        }
+
+        return normalizedBuffer.buffer.slice(
+            normalizedBuffer.byteOffset,
+            normalizedBuffer.byteOffset + normalizedBuffer.byteLength
+        );
     }
 
     #getFrames() {
         const frameBuffers = [];
 
         for (let i = 0; i < GlobalArgs.numberOfFrames; i++) {
-            let frameBuffer = JpegGenerator.generate(i.toString());
-            if (frameBuffer.length & 1) {
-                frameBuffer = Buffer.concat([frameBuffer, Buffer.from([0x00])]);
-            }
-
-            frameBuffers.push(frameBuffer.buffer);
+            const frameBuffer = JpegGenerator.generate(i.toString());
+            frameBuffers.push(this.#toEvenLengthArrayBuffer(frameBuffer));
         }
 
         return frameBuffers;
@@ -52,18 +71,27 @@ class InstanceGenerator {
                 maxRedirections: 10
             });
             const frameBuffer = await body.arrayBuffer();
-            if (frameBuffer.length & 1) {
-                frameBuffer = Buffer.concat([frameBuffer, Buffer.from([0x00])]);
-            }
-
-            frameBuffers.push(frameBuffer);
+            frameBuffers.push(this.#toEvenLengthArrayBuffer(frameBuffer));
         }
 
         return frameBuffers;
     }
 
+    #getProvidedFrames() {
+        return this.frameBuffers.map((frameBuffer) => this.#toEvenLengthArrayBuffer(frameBuffer));
+    }
+
+    async #resolvePixelData() {
+        if (this.frameBuffers?.length) {
+            return this.#getProvidedFrames();
+        }
+
+        return GlobalArgs.useLoremImage ? await this.#getLoremFrames() : this.#getFrames();
+    }
+
     async generate() {
         let sopInstanceUID = DicomMetaDictionary.uid();
+        const pixelData = await this.#resolvePixelData();
 
         const dataset = {
             _vrMap: {
@@ -118,19 +146,19 @@ class InstanceGenerator {
             SamplesPerPixel: 3,
             PhotometricInterpretation: 'YBR_FULL_422',
             PlanarConfiguration: 0,
-            NumberOfFrames: `${GlobalArgs.numberOfFrames}`,
-            Rows: 512,
-            Columns: 512,
+            NumberOfFrames: `${pixelData.length}`,
+            Rows: this.rows,
+            Columns: this.columns,
             BitsAllocated: 8,
             BitsStored: 8,
             HighBit: 7,
             PixelRepresentation: 0,
-            PixelData: GlobalArgs.useLoremImage ? await this.#getLoremFrames() : this.#getFrames(),
+            PixelData: pixelData,
 
             FrameIncrementPointer: attributeNameToIdentifier('FrameTime'),
 
             // Cine Module Attributes
-            FrameTime: `${GlobalArgs.numberOfFrames === 1 ? '0' : 1000 / FRAMES_PER_SEC}`,
+            FrameTime: `${pixelData.length === 1 ? '0' : 1000 / FRAMES_PER_SEC}`,
             FrameDelay: '0.0',
 
             // SOP Common Module Attributes
